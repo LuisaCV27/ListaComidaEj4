@@ -6,17 +6,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -54,16 +60,20 @@ fun MenuApp(){
 
 @Composable
 fun MenuCardList( platilloList: List<Platillo>,modifier: Modifier= Modifier   ){
-
-    LazyColumn(modifier = modifier){
-        items( platilloList ){
-            platillo -> MenuCard(
-            platillo = platillo,
+    Scaffold (
+        topBar = {
+            MenuTopAppBar()
+        }
+    ){
+        it ->
+      LazyColumn( contentPadding = it) {
+        items(platilloList) { platillo ->
+            MenuCard(
+                platillo = platillo,
                 modifier = modifier.padding(10.dp)
-
             )
         }
-
+    }
     }
 
 }
@@ -84,8 +94,8 @@ fun MenuCard(platillo:Platillo, modifier: Modifier = Modifier ){
             )
             Text(
                 text = LocalContext.current.getString(platillo.stringResourceId),
-                modifier = modifier.padding(22.dp),
-                style = MaterialTheme.typography.headlineMedium
+                modifier = modifier.padding(10.dp),
+                style = MaterialTheme.typography.displayMedium
             )
             
         }
@@ -93,10 +103,38 @@ fun MenuCard(platillo:Platillo, modifier: Modifier = Modifier ){
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuTopAppBar(modifier: Modifier=Modifier){
+    CenterAlignedTopAppBar(
+        title = {
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Image(
+                    painter = painterResource(id = R.drawable.logo_nuevo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(65.dp)
+                )
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    style = MaterialTheme.typography.displayLarge
+                )
+            }
+        }
+
+    )
+}
+
+
 @Composable
 @Preview(showBackground = true)
 fun ShowMenuCard(){
-    MenuCardList(platilloList = DataSource().LoadPlatillos()  )
+    ListaComidaOrTheme(darkTheme = false) {
+        MenuCardList(platilloList = DataSource().LoadPlatillos() )
+    }
 }
 
 
